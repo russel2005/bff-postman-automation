@@ -1,0 +1,62 @@
+[
+    {
+        "taxIdNumber": "007704272",
+		"routeId": "COM_DELTA",
+		"dateOfService": "2025-07-31",
+		"memberDOB": "11/20/1956",
+		"memberId": "856259867",
+		"memberFname": "Liz",
+		"memberLname": "Trevelyan",		
+        "activeMemberId": "15225926-7af5-4f0e-8e51-877a733c9573",
+        "accessPointGuid": "c1ebf6f1-4f09-2e5c-3101-90d77dfc43d0",
+		"coordinationOfBenefits": "N"
+    },	
+	{
+        "taxIdNumber": "007704272",
+		"routeId": "COM_DELTA",
+		"dateOfService": "2025-07-15",
+		"memberDOB": "08/11/1965",
+		"memberId": "818556412",
+		"memberFname": "Hettie",
+		"memberLname": "Scarborough",
+        "activeMemberId": "152c7bd0-8cc5-46da-9645-eecbe5de8a07",
+        "accessPointGuid": "c1ebf6f1-4f09-2e5c-3101-90d77dfc43d0",
+		"coordinationOfBenefits": "N"
+    },
+    {
+        "taxIdNumber": "042103580",
+		"routeId": "COM_DELTA",
+		"dateOfService": "2025-07-29",
+		"memberDOB": "05/19/1972",
+		"memberId": "854839078",
+		"memberFname": "Blair",
+		"memberLname": "Blair",
+        "activeMemberId": "e981c064-f0c8-46d3-b197-44e02d775ab8",        
+        "accessPointGuid": "e16fa4e3-fe6f-5829-a6e6-40df59905857",
+		"coordinationOfBenefits": "N"
+    },	
+    {
+        "taxIdNumber": "112544103",
+        "routeId": "COM_DELTA",
+        "dateOfService": "2025-07-29",        
+		"memberDOB": "01/02/1981",
+		"memberId": "I983944486",
+		"memberFname": "Jodee",
+		"memberLname": "Kevin",
+		"activeMemberId": "6f53286e-b72c-4b81-8af9-4af490c24bc9",
+        "accessPointGuid": "cbaf351c-246a-fc3e-164b-b76b120cb1ea",
+		"coordinationOfBenefits": "Y"
+    },
+    {
+        "taxIdNumber": "042161484",
+		"routeId": "COM_DELTA",
+		"dateOfService": "2025-07-29",
+		"memberDOB": "03/05/1950",
+		"memberId": "818901955",
+		"memberFname": "Tomas",
+		"memberLname": "Barton",
+        "activeMemberId": "889f82a0-e25b-4c0c-8fcb-522717ef7c23",
+        "accessPointGuid": "a2d0ee48-7520-35e4-5f7e-43c14b8ebbae",
+		"coordinationOfBenefits": "Y"
+    }
+]

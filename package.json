@@ -1,0 +1,33 @@
+{
+  "name": "postman BFF",
+  "version": "1.0.0",
+  "description": "Postman collection for the Next gen provider portal and it's backing APIs\r The collections have been created based on the swagger repo\r # Getting Started\r 1.\tcreate a new workspace\r 2.\timport the environment and collection files into postman\r 3.\tfor BFF requests copy you jwt token into the applicable environment variable\r 4.\twhen executing requests, select the target environment",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test:ma-bearertoken": "node .\\bearertoken\\QAR-MA.mjs",
+    "test:memberdetails": "newman run \".\\tests\\MemberDetails\\MemberDetail.postman_collection.json\" --insecure -x -e \".\\environments\\BFF-QAR-MA.postman_environment.json\" -d \".\\tests\\MemberDetails\\MemberDetails-TestData-MA-QAR.json\" --reporters cli,htmlextra --reporter-htmlextra-export \".\\Results\\MemberDetail-report.html\" --reporter-htmlextra-title \"BFF Member details report\"",
+    "test:dq-bearertoken": "node .\\bearertoken\\QAR-DQ.mjs",
+    "test:panelroster-d": "newman run \".\\tests\\PanelRosterBFF\\PanelRoster-Download-BFF.postman_collection.json\" --insecure -x -e \".\\environments\\BFF-QAR-DQ.postman_environment.json\" --reporters cli,htmlextra --reporter-htmlextra-export \".\\Results\\Panel-Roster-Downloads-Report.html",
+    "test:memberdetails:all": "npm run test:dq-bearertoken && npm run test:ma-bearertoken && npm run test:memberdetails",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://EnterpriseRepo@dev.azure.com/EnterpriseRepo/Application%20Services/_git/postman"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.54.1",
+    "@types/node": "^22.14.1"
+  },
+  "dependencies": {
+    "newman": "^6.2.1",
+    "newman-reporter-htmlextra": "^1.23.1",
+    "otpauth": "^9.4.0"
+  }
+}

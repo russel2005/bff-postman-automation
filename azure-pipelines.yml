@@ -1,0 +1,98 @@
+schedules:
+- cron: "0 1 * * *"
+  displayName: Every day at 1am run
+  branches:
+    include:
+    - main       
+  always: true
+
+trigger:
+ - main
+ - APPDEV-5362
+
+parameters:
+  - name: environment
+    displayName: 'Select Environment'
+    type: string
+    default: 'QAR'
+    values:
+      - QAR
+      - Dev
+jobs:
+- job: BFF_Postman_Collections
+  timeoutInMinutes: 90 # by default it is 90 minutes are active bearer tokens after crating
+  pool:
+   name: AppSvcs-OnPrem
+   demands:
+     - agent.name -equals agent-build01-AppSvcs-OnPrem-07
+  steps:
+  - task: NodeTool@0
+    inputs:
+     versionSpec: '20.x'
+    displayName: 'Install Node.js'
+  - task: CmdLine@2
+    displayName: 'Install Newman + HTMLExtra Reporter'
+    inputs:
+      script: 'npm install -g newman newman-reporter-htmlextra'
+  - task: CmdLine@2
+    displayName: 'Install required packages'
+    inputs:
+      script : |
+        cd $(Build.SourcesDirectory)
+        npm install @playwright/test otpauth
+  - task: CmdLine@2
+    displayName: 'Install Playwright'
+    inputs:
+      script : |
+        cd $(Build.SourcesDirectory)
+        npx playwright install
+  
+  - task: CmdLine@2
+    displayName: 'Bearer token for NGPP in ${{parameters.environment}}'
+    inputs:
+      script: |
+        cd $(Build.SourcesDirectory)
+        node $(Build.SourcesDirectory)\bearertoken\${{parameters.environment}}-DQ.mjs
+  - task: CmdLine@2
+    displayName: 'Bearer token for MACom in ${{parameters.environment}}'
+    inputs:
+      script: |
+        cd $(Build.SourcesDirectory)
+        node $(Build.SourcesDirectory)\bearertoken\${{parameters.environment}}-MA.mjs
+
+  - task: CmdLine@2
+    displayName: 'Run Member Details Collection - ${{parameters.environment}}'  # New script for Member Details
+    inputs:
+      script: 'newman run "$(Build.SourcesDirectory)\tests\MemberDetails\MemberDetail.postman_collection.json" --insecure -x -e "$(Build.SourcesDirectory)\environments\BFF-QAR-MA.postman_environment.json" -d "$(Build.SourcesDirectory)\tests\MemberDetails\MemberDetails-TestData-MA-QAR.json" --reporters cli,htmlextra --reporter-htmlextra-export "$(Build.SourcesDirectory)\Results\MemberDetail-report.html" --reporter-htmlextra-title "BFF-MA-MemberDetails-report"'
+  
+  - task: CmdLine@2
+    displayName: 'Run PanelRoster Download Collection - ${{parameters.environment}}' #panel roster download
+    inputs:
+     script: 'newman run "$(Build.SourcesDirectory)\tests\PanelRosterBFF\PanelRoster-Download-BFF.postman_collection.json" --insecure -x -e "$(Build.SourcesDirectory)\environments\BFF-${{parameters.environment}}-DQ.postman_environment.json" --reporters cli,htmlextra --reporter-htmlextra-export "$(Build.SourcesDirectory)\Results\Panel-Roster-Downloads-Report.html"'
+  - task: CmdLine@2
+    displayName: 'Run PanelRoster Records Collection - ${{parameters.environment}}' # panel roster records
+    inputs:
+     script: 'newman run "$(Build.SourcesDirectory)\tests\PanelRosterBFF\PanelRoster-Records-BFF.postman_collection.json" --insecure -x -e "$(Build.SourcesDirectory)\environments\BFF-${{parameters.environment}}-DQ.postman_environment.json" --reporters cli,htmlextra --reporter-htmlextra-export "$(Build.SourcesDirectory)\Results\Panel-Roster-Records-Report.html"'
+  - task: CmdLine@2
+    displayName: 'Run Member Search Collection - ${{parameters.environment}}' # member search
+    inputs:
+     script: 'newman run "$(Build.SourcesDirectory)\tests\MemberEligibility\MemberSearch.postman_collection.json" --insecure -x -e "$(Build.SourcesDirectory)\environments\BFF-${{parameters.environment}}-DQ.postman_environment.json" -d "$(Build.SourcesDirectory)\tests\MemberEligibility\MemberSearch${{parameters.environment}}.json" --reporters cli,htmlextra --reporter-htmlextra-export "$(Build.SourcesDirectory)\Results\MemberSearch-Report.html"'
+  - task: CmdLine@2
+    displayName: 'Run Member Saved Search End to End - ${{parameters.environment}}' # member saved search end to end
+    inputs:
+     script: 'newman run "$(Build.SourcesDirectory)\tests\MemberEligibility\MemberEligibility_EndtoEnd.postman_collection.json" --insecure -x -e "$(Build.SourcesDirectory)\environments\BFF-${{parameters.environment}}-DQ.postman_environment.json" -d "$(Build.SourcesDirectory)\tests\MemberEligibility\MemberEligibility${{parameters.environment}}.csv" --reporters cli,htmlextra --reporter-htmlextra-export "$(Build.SourcesDirectory)\Results\MemberSavedSearchEndtoEnd-Report.html"'
+  - task: CmdLine@2
+    displayName: 'Run Member Eligibility - ${{parameters.environment}}' # member eligibility
+    inputs:
+     script: 'newman run "$(Build.SourcesDirectory)\tests\MemberEligibility\MemberEligibility.postman_collection.json" --insecure -x -e "$(Build.SourcesDirectory)\environments\BFF-${{parameters.environment}}-DQ.postman_environment.json" -d "$(Build.SourcesDirectory)\tests\MemberEligibility\MemberEligibility${{parameters.environment}}.csv" --reporters cli,htmlextra --reporter-htmlextra-export "$(Build.SourcesDirectory)\Results\MemberEligibility-Report.html"'
+  - task: CmdLine@2
+    displayName: 'Run Claim Submission Submitted MemberProfileGuid - ${{parameters.environment}}' # claim submission submitted member profile guid
+    inputs:
+     script: 'newman run "$(Build.SourcesDirectory)\tests\Claims\ClaimSubmissionSubmittedMemberProfileGuid.postman_collection.json" --insecure -x -e "$(Build.SourcesDirectory)\environments\BFF-${{parameters.environment}}-DQ.postman_environment.json" -d "$(Build.SourcesDirectory)\tests\Claims\ClaimSubmissionSubmittedMemberProfileGuid-TestData-DQ-${{parameters.environment}}.json" --reporters cli,htmlextra --reporter-htmlextra-export "$(Build.SourcesDirectory)\Results\ClaimSubmissionSubmittedMemberProfileGuid-Report.html"'
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Newman Result Artifacts'
+    inputs:
+     targetPath: '$(Build.SourcesDirectory)\Results'
+     artifact: 'PostmanResults'
+     publishLocation: 'pipeline'

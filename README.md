@@ -1,17 +1,17 @@
 # bff-postman-automation
 postman automation
-# Introduction 
+## Introduction 
 Postman collection for the Next gen provider portal and it's backing APIs
 The collections have been created based on the swagger repo
 
-# Getting Started
+## Getting Started
 1.	create a new workspace
 2.	import the environment and collection files into postman
 3.	for BFF requests copy you jwt token into the applicable environment variable
 4.	when executing requests, select the target environment
 ===================================
 
-# Naming Convention
+## Naming Convention
 1. Environment files names should be named as follows
    > BFF-<DEV|QAR>-<BU Name>.postman_environment.json
 
@@ -27,47 +27,47 @@ The collections have been created based on the swagger repo
    b) x-tax-id-number as "TIN"
    c) x-traceability-id as "traceabilityId" 
 
-# Bearer Token / JWT Token Automation
+## Bearer Token / JWT Token Automation
 
 This project includes an automation script to retrieve a valid bearer token (JWT) and update your Postman environment file.
 The `bearertoken/*.mjs` script automates the login process and updates the `jwtToken` variable in the `BFF-QAR-MA.postman_environment.json` file.
 **Note:** JWT/bearer tokens are typically active for 90 minutes after they are created. Running this script ensures you always have a fresh token.
 
-# How to install required packages
-## 1. Install Node.js
+## How to install required packages
+### 1. Install Node.js
    If not already installed, we recommend using a Node Version Manager (nvm).
    # Example using nvm
    nvm install 20
    or > npm install
    or > npm install -g npm@11.5.1  (specific version to update)
-## 2. install newman (for postman cli)
+### 2. install newman (for postman cli)
    > npm install -g newman
-## 3. install html postman report
+### 3. install html postman report
    > npm install -g newman newman-reporter-htmlextra
-## 4. install playwright, first install the applicable npm package, and then runplaywright's install command to downlaod the browsers
+### 4. install playwright, first install the applicable npm package, and then runplaywright's install command to downlaod the browsers
    > npm install @playwright/test
    > npx playwright install 
-## 5.  Install Required Packages  for  the OTPAuth library  
+### 5.  Install Required Packages  for  the OTPAuth library  
    > npm install @playwright/test otpauth 
-## 6. update bearer token into env file run *.mjs file, example:
+### 6. update bearer token into env file run *.mjs file, example:
    > ```node bearertoken/QAR-DQ.mjs```
    or
    > ```node .\\bearertoken\\QAR-MA.mjs``` [in Windows]
    > ```newman run \".\\tests\\MemberDetails\\MemberDetail.postman_collection.json\" --insecure -x -e \".\\environments\\BFF-QAR-MA.postman_environment.json\" -d \".\\tests\\MemberDetails\\MemberDetails-TestData-MA-QAR.json\" --reporters cli,htmlextra --reporter-htmlextra-export \".\\Results\\MemberDetail-report.html\" --reporter-htmlextra-title \"BFF Member details report\"```
 
-# How to update bearer token or JWT token in local run
+## How to update bearer token or JWT token in local run
    - run bearertoken/*.mjs file with below command
    > node bearertoken/QAR-MA.mjs
 
-# How to run specific postman collection in local from project location in cli
+## How to run specific postman collection in local from project location in cli
    > ```newman run ".\tests\MemberDetails\MemberDetail.postman_collection.json" --insecure -x -e ".\environments\BFF-QAR-MA.postman_environment.json" -d ".\tests\MemberDetails\MemberDetails-TestData-MA-QAR.json" --reporters cli,htmlextra --reporter-htmlextra-export ".\Results\MemberDetail-API-report.html"```
 
-# Newman cli error for local run. something related to location issue
+## Newman cli error for local run. something related to location issue
    > ```newman run ".\tests\MemberDetails\MemberDetail.postman_collection.json" --insecure -x -e ".\environments\BFF-QAR-MA.postman_environment.json" -d ".\tests\MemberDetails\MemberDetails-TestData-MA-QAR.json" --reporters cli,htmlextra --reporter-htmlextra-export ".\Results\MemberDetail-htmlextra-report.html"```
   newman: could not find "cli htmlextra" reporter
   ensure that the reporter is installed in the same directory as newman
   please install reporter using npm
-  ## how to resolved? 
+  ### how to resolved? 
    1. in package.json add above command in script
   exaple:
   ============= 
@@ -93,7 +93,7 @@ The `bearertoken/*.mjs` script automates the login process and updates the `jwtT
  2. how to run from command line?
    > npm run test:memberdetails 
 
-# POSTMAN Collection Test Update and execute in ADO pipline
+## POSTMAN Collection Test Update and execute in ADO pipline
 ==========================================================
 1. update/add/replace *collection.json file in the project
 2. add file in git 
@@ -139,7 +139,7 @@ The most secure way to do this is with a local, offline tool. The decoded string
 
 ``` otpauth://totp/your.label?secret=YOUR_SECRET_KEY&issuer=your.issuer.com ```
 
-#  Update Your Bearer Token Script
+##  Update Your Bearer Token Script
 ===================================
 Finally, open your bearertoken/*.mjs file and update it with your new account details.
 1. Update the username and password in the login section:
